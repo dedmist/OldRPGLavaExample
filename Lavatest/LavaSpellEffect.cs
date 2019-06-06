@@ -45,15 +45,26 @@ namespace Lavatest
                 {
                     origTile = gameMap.getDropTile(origTile);
                 }
-                if (gameMap.isWater(origTile) || gameMap.isObstructed(origTile))
-                {
-                    return;
-                }
-                if (gameMap.isLava(origTile))
+                if (gameMap.isWater(origTile) || gameMap.isObstructed(origTile) || gameMap.isLava(origTile))
                 {
                     return;
                 }
 
+                LinkedList<Tuple<Vector3Int, Vector2Int>> openTiles = findOpenTiles(gameMap);
+                if (openTiles.Count > 0)
+                {
+                    direction = openTiles.First().Item2;
+                    DirectionEnum directionKey = DirectionVectors.key(direction);
+                    gameMap.setDirection(origTile, directionKey);
+                    foreach(Tuple<Vector3Int,Vector2Int> openTile in openTiles)
+                    {
+                        EventQueue.getInstance().enqueue(new LavaSpellEffect(openTile.Item1, 
+                            //direction, 
+                            openTile.Item2, 
+                            lifespan, originCount - 1), 1);
+                    }
+                }
+                /*
                 ArrayList nextObjects = DirectionEnumFunc.isCardinal(DirectionVectors.key(direction)) ?
                     determineNextObjectsCardinal(gameMap) :
                     determineNextObjectsNonCardinal(gameMap);
@@ -65,7 +76,7 @@ namespace Lavatest
                     {
                         EventQueue.getInstance().enqueue(new LavaSpellEffect(nextTile, direction, lifespan, originCount - 1),1);
                     }
-                }
+                }*/
             }
             gameMap.setLava(origTile);
             ++age;
@@ -73,6 +84,54 @@ namespace Lavatest
             EventQueue.getInstance().enqueue(this, 1);
         }
 
+        private LinkedList<Tuple<Vector3Int,Vector2Int> > findOpenTiles(GameMap gameMap)
+        {
+            DirectionEnum[] keys = DirectionVectors.Defaults.Keys.Cast<DirectionEnum>().ToArray();
+            LinkedList<Tuple<Vector3Int, Vector2Int>> nextTile = new LinkedList<Tuple<Vector3Int, Vector2Int>>();
+            Vector2Int[] vals = DirectionVectors.Defaults.Values.Cast<Vector2Int>().ToArray();
+            DirectionEnum directionKey = DirectionVectors.key(direction);
+            Random random = new Random();
+            LinkedList<Vector2Int> testDirections = new LinkedList<Vector2Int>();
+            int[,] index = new int[,] {
+                {
+                    ((int) directionKey + 1) % keys.Length,
+                    ((int) directionKey - 1 + keys.Length) % keys.Length },
+                {
+                    ((int) directionKey + 2) % keys.Length,
+                    ((int) directionKey - 2 + keys.Length) % keys.Length },
+                {
+                    ((int) directionKey + 3) % keys.Length,
+                    ((int) directionKey - 3 + keys.Length) % keys.Length }
+            };
+            for (int i = 0; i< 3; ++i)
+            {              
+                int num = random.Next(2);
+                for(int j = 0; j < 2; ++j)
+                {
+                    testDirections.AddLast((Vector2Int)DirectionVectors.Defaults[keys[index[i,num]]]);
+                    num = (num + 1) % 2;
+                }
+                if(i==2)
+                {
+                    testDirections.AddFirst((Vector2Int)DirectionVectors.Defaults[directionKey]);
+                    testDirections.AddLast((Vector2Int)DirectionVectors.Defaults[((int)directionKey + 4) % keys.Length]);
+                }
+            }
+            int count = testDirections.Count;
+            for(int i = 0; i < count && nextTile.Count < 3; ++i)
+            {
+                Vector2Int testDirection = testDirections.First();
+                Vector3Int tile = origTile + testDirection;
+                testDirections.RemoveFirst();
+                if(!gameMap.isObstructed(tile))
+                {
+                    nextTile.AddLast(new Tuple<Vector3Int,Vector2Int>(tile, testDirection));
+                    System.Console.WriteLine("Step {0} , {1}, {2}", i, direction, testDirection);
+                }
+            }
+            return nextTile;
+        }
+        /*
         private ArrayList determineNextObjectsCardinal(GameMap gameMap)
         {
             DirectionEnum directionKey = DirectionVectors.key(direction);
@@ -85,7 +144,6 @@ namespace Lavatest
             Vector3Int counterTile = origTile + (Vector2Int)DirectionVectors.Counter[directionKey];
             Vector3Int clockwise45Tile = origTile + (Vector2Int)DirectionVectors.Clockwise45[directionKey];
             Vector3Int counter45Tile = origTile + (Vector2Int)DirectionVectors.Counter45[directionKey];
-
             //prefer first open, then bounce, random left or right
             //states: impassible, unobstructed, water, lava, open
             //change direction if not open
@@ -153,7 +211,7 @@ namespace Lavatest
             }
             return nextObjects;
         }
-
+        */
         public void nextExec()
         {
             System.Console.WriteLine("nextExec");

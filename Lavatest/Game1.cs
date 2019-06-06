@@ -54,10 +54,12 @@ namespace Lavatest
             int origin = 19;
             int tickOffset = 3;
 
-            queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 6, 2), DirectionEnum.s, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
-            queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 18, 18), DirectionEnum.n, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
-            queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 6, 2), DirectionEnum.se, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
+            //queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 6, 2), DirectionEnum.s, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
+            //queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 18, 18), DirectionEnum.n, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
+            //queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 6, 2), DirectionEnum.se, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
             queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 18, 18), DirectionEnum.ne, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
+            //queue.enqueue(new LavaSpellEffect(new Vector3Int(0, 18, 18), DirectionEnum.se, lifespan, origin), tickOffset); tickOffset = tickOffset + lifespan + origin + 2;
+
         }
 
 

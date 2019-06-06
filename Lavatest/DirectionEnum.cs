@@ -8,7 +8,7 @@ namespace Lavatest
 {
     enum DirectionEnum
     {
-        n,ne,e,se,s,sw,w,nw,none
+        nw,w,sw,s,se,e,ne,n,none
     }
     static class DirectionEnumFunc
     {

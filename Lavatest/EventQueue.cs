@@ -48,14 +48,14 @@ namespace Lavatest
         }
         public EventObject dequeue()
         {
-            System.Console.WriteLine("dequeue {0}", tick);
+            //System.Console.WriteLine("dequeue {0}", tick);
             if (btree.Count > 0)
             {
                 KeyValuePair<long, LinkedList<EventObject>> topPriority = btree.First();
-                System.Console.WriteLine("topPriority {0}", topPriority.Key);
+                //System.Console.WriteLine("topPriority {0}", topPriority.Key);
                 if (topPriority.Key <= tick)
                 {
-                    System.Console.WriteLine("Executing tick {0}, priority {1}", tick, topPriority.Key);
+                    //System.Console.WriteLine("Executing tick {0}, priority {1}", tick, topPriority.Key);
                     EventObject eo = topPriority.Value.First();
                     if (eo != null)
                     {
